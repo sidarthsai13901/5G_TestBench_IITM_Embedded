@@ -1,0 +1,1 @@
+g++ ftdi_write.cpp -o ftdi_write -I. ftd2xx.lib ; ./ftdi_write.exe
