@@ -14,15 +14,20 @@ DWORD Type;
 char SerialNumber[16];
 char Description[64];
 
-int main(void) {
+int main(void)
+{
     // Initialize FTDI devices
     ftStatus = FT_CreateDeviceInfoList(&numDevs);
 
-    if (ftStatus == FT_OK) {
+    if (ftStatus == FT_OK)
+    {
         printf("Found %d device", numDevs);
-        if (numDevs > 1 || numDevs == 0) {
+        if (numDevs > 1 || numDevs == 0)
+        {
             printf("s:\n");
-        } else {
+        }
+        else
+        {
             printf(":\n");
         }
     }
@@ -44,39 +49,54 @@ int main(void) {
 
     // Open the first available FTDI device
     ftStatus = FT_Open(2, &ftHandle);
-    if (ftStatus == FT_OK) {
+    if (ftStatus == FT_OK)
+    {
         printf("FT_Open succeeded.\n");
 
         // Set baud rate
         ftStatus = FT_SetBaudRate(ftHandle, 9600);
-        if (ftStatus == FT_OK) {
+        if (ftStatus == FT_OK)
+        {
             printf("FT_SetBaudRate succeeded.\n");
 
+
             // Data buffers for write and read
-            char TxBuffer[] = "Hello from FTDssssssssssssssssssssssssssssssssssssssssssI!";
+            char TxBuffer[] = "hello world ";
             char RxBuffer[BUFFER_SIZE];
             DWORD BytesWritten, BytesReceived;
 
             // Write data to the device
+            // while(1)
             ftStatus = FT_Write(ftHandle, TxBuffer, sizeof(TxBuffer), &BytesWritten);
-            if (ftStatus == FT_OK) {
+            if (ftStatus == FT_OK)
+            {
                 printf("FT_Write succeeded. Sent %d bytes.\n", BytesWritten);
 
                 // Read data from the device
-// Read data from the device
-ftStatus = FT_Read(ftHandle, RxBuffer, sizeof(RxBuffer), &BytesReceived);
-if (ftStatus == FT_OK) {
-    printf("FT_Read succeeded. Received %d bytes: %s\n", BytesReceived, RxBuffer);
-} else {
-    printf("FT_Read failed.\n");
-}
-            } else {
+                // Read data from the device
+                printf("Trying to read");
+                ftStatus = FT_Read(ftHandle, RxBuffer, sizeof(RxBuffer), &BytesReceived);
+                if (ftStatus == FT_OK)
+                {
+                    printf("FT_Read succeeded. Received %d bytes: %s\n", BytesReceived, RxBuffer);
+                }
+                else
+                {
+                    printf("FT_Read failed.\n");
+                }
+            }
+            else
+            {
                 printf("FT_Write failed.\n");
             }
-        } else {
+        }
+        else
+        {
             printf("FT_SetBaudRate failed.\n");
         }
-    } else {
+    }
+    else
+    {
         printf("FT_Open failed.\n");
     }
 
