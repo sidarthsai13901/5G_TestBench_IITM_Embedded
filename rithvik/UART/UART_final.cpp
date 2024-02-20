@@ -67,13 +67,13 @@ int main(void)
 
             // Write data to the device
             // while(1)
-            ftStatus = FT_Write(ftHandle, TxBuffer, sizeof(TxBuffer), &BytesWritten);
-            if (ftStatus == FT_OK)
-            {
-                printf("FT_Write succeeded. Sent %d bytes.\n", BytesWritten);
+            // ftStatus = FT_Write(ftHandle, TxBuffer, sizeof(TxBuffer), &BytesWritten);
+            // if (ftStatus == FT_OK)
+            // {
+            //     printf("FT_Write succeeded. Sent %d bytes.\n", BytesWritten);
 
-                // Read data from the device
-                // Read data from the device
+            //     // Read data from the device
+            //     // Read data from the device
                 printf("Trying to read");
                 ftStatus = FT_Read(ftHandle, RxBuffer, sizeof(RxBuffer), &BytesReceived);
                 if (ftStatus == FT_OK)
@@ -84,11 +84,11 @@ int main(void)
                 {
                     printf("FT_Read failed.\n");
                 }
-            }
-            else
-            {
-                printf("FT_Write failed.\n");
-            }
+            // }
+            // else
+            // {
+            //     printf("FT_Write failed.\n");
+            // }
         }
         else
         {
