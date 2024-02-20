@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include "libmpsse_i2c.h"
+
+#define I2C_DEVICE_ADDRESS 0x50
+
+void handle_error(FT_STATUS status) {
+    if (status != FT_OK) {
+        printf("Error: %d\n", status);
+        exit(1);
+    }
+}
+
+int main() {
+    FT_HANDLE ftHandle;
+    FT_STATUS status;
+
+    // Initialize the library
+    status = FT_Initialise(&ftHandle);
+    handle_error(status);
+
+    // Open the first available device
+    status = FT_Open(0, &ftHandle);
+    handle_error(status);
+
+    // Set the communication mode to I2C
+    status = FT_SetBitMode(ftHandle, 0x00, 0x02);
+    handle_error(status);
+
+    // Initialize the I2C interface
+    status = I2C_Init(ftHandle, 100000); // 100kHz communication speed
+    handle_error(status);
+
+    // I2C write example: write a byte to a specific register
+    uint8_t write_data = 0xAA;
+    uint8_t register_address = 0x01;
+
+    status = I2C_DeviceWrite(ftHandle, I2C_DEVICE_ADDRESS, 1, &register_address, 1, &write_data, NULL);
+    handle_error(status);
+
+    // I2C read example: read a byte from a specific register
+    uint8_t read_data;
+    status = I2C_DeviceRead(ftHandle, I2C_DEVICE_ADDRESS, 1, &register_address, 1, &read_data, NULL);
+    handle_error(status);
+
+    printf("Read data: 0x%02X\n", read_data);
+
+    // Close the device and clean up
+    status = FT_Close(ftHandle);
+    handle_error(status);
+
+    status = FT_Cleanup();
+    handle_error(status);
+
+    return 0;
+}
