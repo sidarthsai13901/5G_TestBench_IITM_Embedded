@@ -8,8 +8,8 @@ int main() {
     FT_HANDLE handle;
     unsigned long channels = 0;
     unsigned char i2cChannel = 0; // Assuming the first channel is used
-    unsigned char deviceAddress = 0x50; // Device address for I2C
-    unsigned char writeData[] = {0x00, 0x00, 0xFF}; // Data to write
+    unsigned char deviceAddress = 0x6C << 1; // Device address for I2C, left shift for write operation
+    unsigned char registerAddress = 0x0B; // Register address you want to read from
     unsigned char readData[2]; // Buffer for read data
     unsigned long bytesWritten, bytesRead;
 
@@ -45,19 +45,26 @@ int main() {
         return 1;
     }
 
-    // Write to the I2C device
-    status = I2C_DeviceWrite(handle, deviceAddress, sizeof(writeData), writeData, &bytesWritten, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_STOP_BIT);
-    if (status != FT_OK) {
-        std::cerr << "I2C write operation failed.\n";
-        return 1;
-    }
+    // // Write the register address to the device (without STOP bit to indicate a repeated start condition)
+    // status = I2C_DeviceWrite(handle, deviceAddress, 1, &registerAddress, &bytesWritten, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_BREAK_ON_NACK);
+    // if (status != FT_OK || bytesWritten != 1) {
+    //     std::cerr << "Failed to write register address.\n";
+    //     return 1;
+    // }
 
-    // Read from the I2C device
-    status = I2C_DeviceRead(handle, deviceAddress, sizeof(readData), readData, &bytesRead, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_STOP_BIT);
+    // Read from the specified register
+    status = I2C_DeviceRead(handle, deviceAddress, sizeof(readData), readData, &bytesRead, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_STOP_BIT | I2C_TRANSFER_OPTIONS_NACK_LAST_BYTE);
     if (status != FT_OK) {
         std::cerr << "I2C read operation failed.\n";
         return 1;
     }
+
+    // Output the read data
+    std::cout << "Data read from register 0x" << std::hex << static_cast<int>(registerAddress) << ": ";
+    for (unsigned long i = 0; i < bytesRead; ++i) {
+        std::cout << "0x" << static_cast<int>(readData[i]) << " ";
+    }
+    std::cout << std::endl;
 
     // Close the channel and clean up
     I2C_CloseChannel(handle);
@@ -66,3 +73,4 @@ int main() {
     std::cout << "Operation completed successfully.\n";
     return 0;
 }
+
