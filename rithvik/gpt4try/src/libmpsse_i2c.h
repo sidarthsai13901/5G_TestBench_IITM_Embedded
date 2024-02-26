@@ -25,8 +25,6 @@
  * 0.3 - 20200428 - removed unnecessary files and directory structure
  *                  type of bool changed to unsigned int match WinTypes.h
  */
-#include <windows.h>
-#include "ftd2xx.h"
 
 #ifndef FTDI_I2C_H
 #define FTDI_I2C_H

@@ -144,7 +144,7 @@ I2C_DataRate_3_4M for the standard clock rates
 or a clock divisor value may be passed
 */
 typedef enum I2C_ClockRate_t{
-	I2C_CLOCK_STANDARD_MODE = 9600,		/* 100kb/sec */
+	I2C_CLOCK_STANDARD_MODE = 100000,		/* 100kb/sec */
 	I2C_CLOCK_FAST_MODE = 400000,			/* 400kb/sec */
 	I2C_CLOCK_FAST_MODE_PLUS = 1000000,		/* 1000kb/sec */
 	I2C_CLOCK_HIGH_SPEED_MODE = 3400000		/* 3.4Mb/sec */
