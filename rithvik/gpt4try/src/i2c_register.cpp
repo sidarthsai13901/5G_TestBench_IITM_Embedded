@@ -15,7 +15,7 @@ int main() {
     DWORD bytesRead = 0;
     DWORD bytesToRead = 1; // Adjust based on how many bytes you want to read
     std::vector<unsigned char> readBuffer(bytesToRead);
-    unsigned char slaveAddress = 0x6C; // Change to your slave device's address
+    unsigned char slaveAddress = 0x0B ; // Change to your slave device's address
     unsigned char registerAddress = 0x0B; // Register address you want to read from
 
     // Initialize channel configuration

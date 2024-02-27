@@ -1,6 +1,7 @@
 # Load the libraries
 import ctypes
-import Channel
+from pyftdi.ftdi import Ftdi
+# import channel
 libMPSSE = ctypes.cdll.LoadLibrary('./libmpsse.dll')
 print('Loaded MPSSE library')
 libD2XX = ctypes.cdll.LoadLibrary('./ftd2xx.dll')
