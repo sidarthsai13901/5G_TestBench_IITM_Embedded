@@ -29,6 +29,8 @@ int main()
             printf("Failed to open the channel\n");
             return 1;
         }
+        else
+            printf("Opened the channel\n");
 
         // Configure the I2C channel
         ChannelConfig channelConf;
@@ -42,7 +44,8 @@ int main()
             printf("Failed to initialize the channel\n");
             return 1;
         }
-
+        else
+            printf(" initialized the channel\n");
         // Write to an I2C device
         UCHAR address = 0x50;                // Use UCHAR directly for address
         UCHAR buffer[] = {0x00, 0x01, 0x02}; // Data to write
@@ -50,6 +53,7 @@ int main()
         DWORD bytesWritten = 0;              // Use DWORD directly
 
         status = I2C_DeviceWrite(ftHandle, address, bytesToWrite, buffer, &bytesWritten, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_STOP_BIT);
+        printf("reached here");
         printf("Operation status: %d\n", status); // Corrected line to print the status code
         if (status != FT_OK)
         {
