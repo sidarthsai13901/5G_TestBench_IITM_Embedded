@@ -6,44 +6,55 @@
 int main() {
     FT_STATUS status = FT_OK;
     FT_HANDLE handle;
+    // DWORD channels = 0;
+    // DWORD i2cChannel = 0; // Assuming the first channel is used
+    // DWORD deviceAddress = 0x28; // Example I2C address, change as needed
+    unsigned char writeData[] = {0x00, 0x00, 0xFF}; // Example data to write
     unsigned long channels = 0;
     unsigned char i2cChannel = 0; // Assuming the first channel is used
     unsigned char deviceAddress = 0x6C << 1; // Device address for I2C, left shift for write operation
     unsigned char registerAddress = 0x0B; // Register address you want to read from
     unsigned char readData[2]; // Buffer for read data
-    unsigned long bytesWritten, bytesRead;
+    DWORD bytesWritten, bytesRead;
 
-    // Initialize the MPSSE library
     Init_libMPSSE();
     std::cout << "LibMPSSE initialized.\n";
 
-    // Get the number of available I2C channels and check for availability
     status = I2C_GetNumChannels(&channels);
     if (status != FT_OK || channels == 0) {
         std::cerr << "Failed to get number of channels or no channels available.\n";
         return 1;
-    }
+    }   
+    std::cout << "Channels: " << channels << "\n";
 
-    // Open the first I2C channel
     status = I2C_OpenChannel(i2cChannel, &handle);
     if (status != FT_OK) {
         std::cerr << "Unable to open I2C channel.\n";
         return 1;
     }
+    std::cout << "Channel opened.\n";
 
-    // Configuration for the I2C channel
     ChannelConfig config = {
-        I2C_CLOCK_STANDARD_MODE, // Clock rate
-        2,                       // Latency timer
-        I2C_DISABLE_3PHASE_CLOCKING // Options
+        I2C_CLOCK_STANDARD_MODE,
+        2,
+        I2C_DISABLE_3PHASE_CLOCKING
     };
 
-    // Initialize the channel with the configuration
     status = I2C_InitChannel(handle, &config);
     if (status != FT_OK) {
         std::cerr << "Unable to initialize I2C channel.\n";
+        I2C_CloseChannel(handle);
         return 1;
     }
+
+    status = I2C_DeviceWrite(handle, deviceAddress, sizeof(writeData), writeData, &bytesWritten, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_STOP_BIT);
+    if (status == FT_OK) {
+        std::cout << "Write successful, bytes written: " << bytesWritten << "\n";
+    } else {
+        std::cerr << "I2C write operation failed.\n";
+    }
+
+    // Add I2C_DeviceRead operation here if needed
 
     // // Write the register address to the device (without STOP bit to indicate a repeated start condition)
     // status = I2C_DeviceWrite(handle, deviceAddress, 1, &registerAddress, &bytesWritten, I2C_TRANSFER_OPTIONS_START_BIT | I2C_TRANSFER_OPTIONS_BREAK_ON_NACK);
@@ -69,8 +80,7 @@ int main() {
     // Close the channel and clean up
     I2C_CloseChannel(handle);
     Cleanup_libMPSSE();
-
-    std::cout << "Operation completed successfully.\n";
+    std::cout << "Operation completed.\n";
     return 0;
 }
 
