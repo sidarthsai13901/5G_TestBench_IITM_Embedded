@@ -40,10 +40,13 @@ kernel & user mode
 
 #ifndef FTD2XX_H
 #define FTD2XX_H
+<<<<<<< HEAD
+=======
 
 #ifdef _WIN32
 // Compiling on Windows
 #include <windows.h>
+>>>>>>> be1484dde461a71393201b0c145ea93055c6904c
 
 // The following ifdef block is the standard way of creating macros
 // which make exporting from a DLL simpler.  All files within this DLL
