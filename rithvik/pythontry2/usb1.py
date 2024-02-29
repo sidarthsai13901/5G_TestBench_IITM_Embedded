@@ -5,7 +5,8 @@ ser = serial_for_url('ftdi://ftdi:232h:0:ff/1', baudrate=9600)
 
 # Write a string to the device
 data_to_write = b'Hello, FTDI device!'
-ser.write(data_to_write)
+while(1):
+    ser.write(data_to_write)
 
 # Close the serial port
 ser.close()
