@@ -25,16 +25,6 @@ def status(ret_val):
     return status_messages.get(ret_val, f"Unknown error {ret_val}")
 
 
-
-
-
-
-
-
-
-
-
-
 # list the channels available
 print('Listing channels...')
 libMPSSE.Init_libMPSSE()
