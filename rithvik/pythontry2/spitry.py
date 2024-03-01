@@ -1,12 +1,10 @@
 from pyftdi.spi import SpiController
 
-# Constants for the device's protocol
-READ_COMMAND = 0b00000011  # Hypothetical read command (adjust based on your device)
-REGISTER_ADDRESS = 0x01  # The register address you want to read
+READ_COMMAND = 0b00000010  # Hypothetical read command (adjust based on your device)
+REGISTER_ADDRESS = 0x00 # The register address you want to read
 
-# Initialize the SPI controller
 spi = SpiController()
-spi.configure('ftdi://ftdi:4232h/1')  # Adjust as necessary for your device
+spi.configure('ftdi://ftdi:232h:FT9Q27K3/1')  # Adjust as necessary for your device
 
 try:
     # Obtain a SPI port to the slave with /CS on pin 0 (adjust if needed)
@@ -16,7 +14,7 @@ try:
     # Typically, for reading a register, you send the read command followed by the address
     # and then read back the data.
     to_send = bytes([READ_COMMAND, REGISTER_ADDRESS])
-
+    
     # Send the read command and address, then read back the register value
     # The number of bytes to read back (e.g., 1 here) depends on how much data the register holds
     read_data = slave.exchange(to_send, readlen=1)
