@@ -16,36 +16,46 @@ root = Tk()
 root.geometry("600x400")
 
 # Create a frame container in the bottom half of the window
-frame_container = Frame(root, width=600, height=200)
+frame_container = Frame(root, width=    600, height=200)
 frame_container.pack(side="bottom", fill="x", expand=True)
 
 
 # Create a dictionary to hold the frames
 frames = {}
-options = ["UART Read", "UART Write", "I2C", "SPI"]
+options = ["UART READ", "UART WRITE", "I2C READ", "SPI READ"]
 # for option in options:
 
-entry1=""
+
 
 frame1 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 label = Label(frame1, text="UART Read")
+
+val= Entry(frame1)
+
 label.pack()
-frames["UART Read"] = frame1
+val.pack()
+frames["UART READ"] = frame1
 
 
 frame2 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 label = Label(frame2, text="UART Write")
 label.pack()
-frames["UART Write"] = frame2
+frames["UART WRITE"] = frame2
 
 
 frame3 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 label = Label(frame3, text="I2C")
+i2cslave=Entry(frame3)
+regadd=Entry(frame3)
+i2c_out=Label(frame3,text="OUTPUT")
+i2c_out.pack()
 label.pack()
-frames["I2C"] = frame3
+i2cslave.pack()
+regadd.pack()
+frames["I2C READ"] = frame3
 
 
 frame4 = Frame(frame_container, width=600, height=200)
@@ -55,10 +65,7 @@ in1= Entry(frame4)
 in1.pack()
 label = Label(frame4, text="SPI")
 label.pack()
-frames["SPI"] = frame4
-
-
-
+frames["SPI READ"] = frame4
 
 
 # Dropdown menu text variable
@@ -72,7 +79,7 @@ drop.pack()
 
 
 # Create the button that changes the displayed frame
-button = Button(root, text="Click Me", command=show)
+button = Button(root, text="Select", command=show)
 print(button)
 button.pack()
 
