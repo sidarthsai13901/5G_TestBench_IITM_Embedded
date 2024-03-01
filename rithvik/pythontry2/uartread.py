@@ -1,7 +1,7 @@
 import serial
 
 # Replace 'COM3' with the COM port assigned to your FT232H device
-com_port = 'COM6'
+com_port = 'COM18'
 baud_rate = 9600  # Adjust as needed
 
 # Open serial port

@@ -10,81 +10,68 @@ def show():
     frame = frames[clicked.get()]
     frame.pack(fill='both', expand=True)
     
-
 # Create the main window
 root = Tk()
 root.geometry("600x400")
 
 # Create a frame container in the bottom half of the window
-frame_container = Frame(root, width=    600, height=200)
+frame_container = Frame(root, width=600, height=200)
 frame_container.pack(side="bottom", fill="x", expand=True)
-
 
 # Create a dictionary to hold the frames
 frames = {}
 options = ["UART READ", "UART WRITE", "I2C READ", "SPI READ"]
-# for option in options:
 
-
-
-#uart read
+# UART READ
 frame1 = Frame(frame_container, width=600, height=200)
-# Add a label or any widgets you need inside this frame
-label = Label(frame1, text="UART Read")
-
-val= Entry(frame1)
-label.pack()
-val.pack()
+uart_read_label = Label(frame1, text="UART Read Data")
+uart_read_entry = Entry(frame1)
+uart_read_label.pack()
+uart_read_entry.pack()
 frames["UART READ"] = frame1
 
-
-#uart write
+# UART WRITE
 frame2 = Frame(frame_container, width=600, height=200)
-# Add a label or any widgets you need inside this frame
-label = Label(frame2, text="UART Write")
-label.pack()
+uart_write_label = Label(frame2, text="UART Write Data")
+uart_write_entry = Entry(frame2)
+uart_write_label.pack()
+uart_write_entry.pack()
 frames["UART WRITE"] = frame2
 
-
-
-#i2c
+# I2C READ
 frame3 = Frame(frame_container, width=600, height=200)
-# Add a label or any widgets you need inside this frame
-label = Label(frame3, text="I2C")
-i2cslave=Entry(frame3)
-regadd=Entry(frame3)
-i2c_out=Label(frame3,text="OUTPUT")
-i2c_out.pack()
-label.pack()
-i2cslave.pack()
-regadd.pack()
+i2c_label = Label(frame3, text="I2C Read Parameters")
+i2c_slave_label = Label(frame3, text="I2C Slave Address")
+i2c_reg_label = Label(frame3, text="Register Address")
+i2c_slave_entry = Entry(frame3)
+i2c_reg_entry = Entry(frame3)
+i2c_output_label = Label(frame3, text="OUTPUT")
+i2c_label.pack()
+i2c_slave_label.pack()
+i2c_slave_entry.pack()
+i2c_reg_label.pack()
+i2c_reg_entry.pack()
+i2c_output_label.pack()
 frames["I2C READ"] = frame3
 
-
-#spi
+# SPI READ
 frame4 = Frame(frame_container, width=600, height=200)
-# Add a label or any widgets you need inside this frame
-
-in1= Entry(frame4)
-in1.pack()
-label = Label(frame4, text="SPI")
-label.pack()
+spi_read_label = Label(frame4, text="SPI Read Data")
+spi_read_entry = Entry(frame4)
+spi_read_label.pack()
+spi_read_entry.pack()
 frames["SPI READ"] = frame4
-
 
 # Dropdown menu text variable
 clicked = StringVar()
-clicked.set(options[0])  # Default set to first option or use "Select an option"
+clicked.set(options[0])  # Default set to first option
 
 # Create the Dropdown menu
 drop = OptionMenu(root, clicked, *options)
-print(drop)
 drop.pack()
-
 
 # Create the button that changes the displayed frame
 button = Button(root, text="Select", command=show)
-print(button)
 button.pack()
 
 # Start the Tkinter loop
