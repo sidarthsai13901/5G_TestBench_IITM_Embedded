@@ -27,17 +27,18 @@ options = ["UART READ", "UART WRITE", "I2C READ", "SPI READ"]
 
 
 
+#uart read
 frame1 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 label = Label(frame1, text="UART Read")
 
 val= Entry(frame1)
-
 label.pack()
 val.pack()
 frames["UART READ"] = frame1
 
 
+#uart write
 frame2 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 label = Label(frame2, text="UART Write")
@@ -45,6 +46,8 @@ label.pack()
 frames["UART WRITE"] = frame2
 
 
+
+#i2c
 frame3 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 label = Label(frame3, text="I2C")
@@ -58,6 +61,7 @@ regadd.pack()
 frames["I2C READ"] = frame3
 
 
+#spi
 frame4 = Frame(frame_container, width=600, height=200)
 # Add a label or any widgets you need inside this frame
 
