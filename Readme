@@ -1,5 +1,3 @@
-Sure, let's break down the UART and I2C related functions in more detail, explaining their purpose and how they operate:
-
 ###UART Functions
 
 ####1. `uart_read()`
