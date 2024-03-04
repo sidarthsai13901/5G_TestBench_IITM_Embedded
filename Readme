@@ -1,0 +1,49 @@
+Sure, let's break down the UART and I2C related functions in more detail, explaining their purpose and how they operate:
+
+### UART Functions
+
+#### 1. `uart_read()`
+This function is designed to handle the reading of data from a UART interface. It operates as follows:
+
+- It first retrieves the COM port and baud rate specified by the user through the GUI entries `com_port_entry_read` and `baud_rate_entry_read`.
+- The function attempts to convert the baud rate from string to integer, displaying an error on the GUI if the conversion fails.
+- It then tries to open a serial port using the `serial.Serial` class with the provided COM port and baud rate. If successful, it continuously reads data from this port in a loop until `stop_threads` is set to `True`.
+- Data read from the serial port is decoded from bytes to a UTF-8 string and displayed in the GUI's `uart_read_output` label.
+- If there are issues opening the serial port or during reading, an error is displayed in the GUI.
+- The serial port is closed properly when exiting the function to avoid resource leaks.
+
+#### 2. `start_uart_read()`
+This function is a simple trigger for starting the UART read thread:
+
+- It resets the `stop_threads` flag to `False`.
+- It creates and starts a new daemon thread targeting the `uart_read` function, allowing the main program to exit even if the thread is running.
+
+#### 3. `stop_uart_read()`
+This function stops the UART reading process:
+
+- It sets the `stop_threads` flag to `True`, which causes the loop in `uart_read` to terminate.
+- It updates the GUI to indicate that UART reading has been stopped.
+
+#### 4. `uart_write()`
+This function handles sending data over UART:
+
+- It collects the COM port and baud rate from the GUI, converting the baud rate to an integer.
+- It retrieves the message to be sent from the `uart_write_entry` field, appending a newline character for transmission.
+- It opens a serial connection using the provided parameters and sends the encoded message.
+- It provides feedback in the GUI on the message sent or any errors encountered.
+- It ensures the serial port is closed after the operation to prevent resource leaks.
+
+### I2C Functions
+
+#### 1. `i2c_read()`
+This function is responsible for reading data from an I2C device:
+
+- It retrieves the I2C slave address, register address, and the number of bytes to read from the GUI entries.
+- These values are converted from strings to integers (with hexadecimal conversion for addresses).
+- It initializes the `I2cController` and configures it with the specified board address.
+- The function then communicates with the I2C device: it sends the register address and then reads the specified number of bytes from that address.
+- The read data is displayed in the GUI's `i2c_output_label`.
+- If any part of this process fails (e.g., due to invalid input or communication errors), an error message is displayed.
+- Finally, it terminates the I2C controller to clean up resources.
+
+These functions collectively provide the core functionality for interacting with UART and I2C interfaces through a GUI, allowing users to perform basic read and write operations on connected devices.
