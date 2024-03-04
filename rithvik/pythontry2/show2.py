@@ -6,13 +6,12 @@ from pyftdi.misc import add_custom_devices
 
 class I2cBusScanner:
     """Scan I2C bus to find slave devices."""
-    SMB_READ_RANGE = list(range(0x30, 0x38)) + list(range(0x50, 0x60))
+    SMB_READ_RANGE = list(range(0x30,0x60))
     HIGHEST_I2C_SLAVE_ADDRESS = 0x78
 
     @classmethod
     def scan(cls, url: str, smb_mode: bool = True, force: bool = False) -> list:
         i2c = I2cController()
-        responding_addresses = []
         getLogger('pyftdi.i2c').setLevel(ERROR)
         i2c.configure(url)
         i2c.set_retry_count(1)
@@ -25,12 +24,10 @@ class I2cBusScanner:
                     port.read(0)
                 else:
                     port.write([])
-                responding_addresses.append(hex(addr))
             except I2cNackError:
                 continue
 
         i2c.terminate()
-        return responding_addresses
 
 parser = ArgumentParser(description="I2C bus scanner utility.")
 parser.add_argument('device', nargs='?', default='ftdi:///?', help='Serial port device name')
@@ -46,6 +43,4 @@ getLogger('pyftdi.i2c').addHandler(StreamHandler(stderr))
 
 if args.vidpid:
     add_custom_devices(I2cController, args.vidpid)
-
-print(I2cBusScanner.scan(args.device, not args.no_smb, args.force))
-# print("Found I2C devices at addresses:", found_devices)
+I2cBusScanner.scan(args.device, not args.no_smb, args.force)

@@ -1,2 +1,2 @@
-    found_devices = I2cBusScanner.scan(args.device, not args.no_smb, args.force)
-    print("Found I2C devices at addresses:", found_devices)
+parser.add_argument('-P', '--vidpid', action='append', help='Specify a custom VID:PID ID')
+parser.add_argument('-v', '--verbose', action='count', default=0, help='Increase verbosity')
