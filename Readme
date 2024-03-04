@@ -45,3 +45,32 @@ This function is responsible for reading data from an I2C device:
 - Finally, it terminates the I2C controller to clean up resources.
 
 These functions collectively provide the core functionality for interacting with UART and I2C interfaces through a GUI, allowing users to perform basic read and write operations on connected devices.
+
+
+
+This script is a utility tool for scanning an I2C bus to detect slave devices using an FTDI-based USB to I2C converter. It uses the `pyftdi` library to communicate with the FTDI device and scan the I2C bus. Here's a detailed explanation of each part of the script:
+
+### I2cBusScanner Class
+
+1. **SMB_READ_RANGE and HIGHEST_I2C_SLAVE_ADDRESS**: These constants define the range of addresses to scan in SMBus mode and the highest possible I2C address, respectively.
+
+2. **scan Method**: The core method of the `I2cBusScanner` class, responsible for scanning the I2C bus.
+   - It initializes an `I2cController` object and sets the log level for the `pyftdi.i2c` logger to ERROR to minimize noise.
+   - The I2C controller is configured with the provided URL (which specifies how to access the FTDI device).
+   - The method iterates over all possible I2C addresses up to the defined maximum. For each address:
+     - It creates a port using `get_port(addr)`.
+     - It attempts to read from the address (or just write an empty list if not in SMBus mode). If a device acknowledges the transaction, the address is considered active.
+     - If an `I2cNackError` is caught, it means no device acknowledged at the current address, and the scan moves on to the next.
+   - Finally, it terminates the I2C controller to clean up resources.
+
+### Main Script
+
+1. **Argument Parsing**: The script uses `argparse` to handle command-line arguments, allowing the user to specify the FTDI device URL, operation mode, verbosity, etc.
+
+2. **Logging Configuration**: Depending on the verbosity level set by the user, the log level for the `pyftdi.i2c` logger is set to either DEBUG or ERROR. A stream handler is added to direct log messages to `stderr`.
+
+3. **Custom Device Addition**: If the user provides custom VID:PID pairs with the `-P` option, these are added to the I2cController to allow communication with non-standard FTDI devices.
+
+4. **Bus Scanning**: The script calls the `scan` method of `I2cBusScanner`, passing the device URL, SMBus mode flag, and clock mode force flag based on the parsed arguments.
+
+This utility is particularly useful for debugging or setting up systems where the connected I2C devices are unknown or need to be verified. By scanning the bus, users can identify which devices are present and responsive before attempting more complex operations or configurations.
