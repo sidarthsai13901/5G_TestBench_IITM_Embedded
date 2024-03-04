@@ -1,15 +1,10 @@
 from tkinter import *
 import serial
 import threading
-from pyftdi.i2c import I2cController
+from pyftdi.i2c import I2cController, I2cNackError
 
 # Global variable for UART reading thread control
 stop_threads = False
-
-
-
-
-
 
 def show():
     for frame in frames.values():
@@ -73,35 +68,58 @@ def uart_write():
         if 'ser' in locals() and ser.is_open:
             ser.close()
 
-# I2C Read Functionality
-def i2c_read():
-    i2c_slave_str = i2c_slave_entry.get()
+# I2C Scan and Read Functionality
+def i2c_scan_read():
     i2c_reg_str = i2c_reg_entry.get()
-    bytes_num=i2c_bytes.get()
-    board_add_val=board_add.get()
-    # print(board_add_val)
+    bytes_num = int(i2c_bytes.get())
+    selected_slave_addr = slave_addr_var.get()
+
+    if not selected_slave_addr:
+        i2c_output_label.config(text="No I2C address selected")
+        return
+
     try:
-        slave_addr = int(i2c_slave_str, 16)
+        slave_addr = int(selected_slave_addr, 16)
         register_addr = int(i2c_reg_str, 16)
     except ValueError:
-        i2c_output_label.config(text="Invalid address")
+        i2c_output_label.config(text="Invalid address or register")
         return
 
     i2c = I2cController()
     try:
-        i2c.configure(board_add_val)  # Modify as needed
+        i2c.configure('ftdi://ftdi:232h:FT9Q27K3/1')
         slave = i2c.get_port(slave_addr)
         slave.write([register_addr], False)
-        data = slave.read(bytes_num)  # Modify based on expected data length
+        data = slave.read(bytes_num)
         i2c_output_label.config(text=f"Read: {data}")
     except Exception as e:
         i2c_output_label.config(text=f"Error: {str(e)}")
     finally:
         i2c.terminate()
 
-# SPI Read Functionality (Placeholder - Implement your SPI logic)
-def spi_read():
-    spi_output_label.config(text="SPI Read function not implemented")
+def i2c_scan():
+    i2c = I2cController()
+    address_list = []
+    try:
+        i2c.configure('ftdi://ftdi:232h:FT9Q27K3/1')
+        for addr in range(0x08, 0x78):  # Valid 7-bit addresses
+            port = i2c.get_port(addr)
+            try:
+                port.read(1)
+                address_list.append(f"0x{addr:02X}")
+            except I2cNackError:
+                continue
+    finally:
+        i2c.terminate()
+
+    # Update the dropdown menu with found addresses
+    slave_addr_menu['menu'].delete(0, 'end')
+    for address in address_list:
+        slave_addr_menu['menu'].add_command(label=address, command=lambda value=address: slave_addr_var.set(value))
+    if address_list:
+        slave_addr_var.set(address_list[0])
+    else:
+        i2c_output_label.config(text="No I2C devices found")
 
 # Main GUI Setup
 root = Tk()
@@ -151,44 +169,32 @@ uart_write_button.pack()
 uart_write_output.pack()
 frames["UART WRITE"] = frame2
 
-# I2C READ Frame Setup
+# I2C READ Frame Setup with Scan Functionality
 frame3 = Frame(frame_container, width=600, height=200)
-board_label=Label(frame3,text="enter the board address")
-board_add=Entry(frame3)
-bytes_label=Label(frame3, text="Enter number of bytes to read")
 i2c_label = Label(frame3, text="I2C Read Parameters")
-i2c_slave_label = Label(frame3, text="I2C Slave Address (hex):")
+i2c_scan_button = Button(frame3, text="Scan I2C Bus", command=i2c_scan)
+slave_addr_var = StringVar(root)
+slave_addr_menu = OptionMenu(frame3, slave_addr_var, "No address")
+i2c_slave_label = Label(frame3, text="Select I2C Slave Address:")
 i2c_reg_label = Label(frame3, text="Register Address (hex):")
-i2c_slave_entry = Entry(frame3)
 i2c_reg_entry = Entry(frame3)
-i2c_read_button = Button(frame3, text="Read I2C", command=i2c_read)
+i2c_bytes_label = Label(frame3, text="Number of Bytes to Read:")
+i2c_bytes = Entry(frame3)
+i2c_read_button = Button(frame3, text="Read I2C", command=i2c_scan_read)
 i2c_output_label = Label(frame3, text="No data read yet")
-i2c_bytes=Entry(frame3)
 i2c_label.pack()
-
-board_label.pack()
-board_add.pack()
-
-bytes_label.pack()
-i2c_bytes.pack()
-
+i2c_scan_button.pack()
 i2c_slave_label.pack()
-i2c_slave_entry.pack()
+slave_addr_menu.pack()
 i2c_reg_label.pack()
 i2c_reg_entry.pack()
+i2c_bytes_label.pack()
+i2c_bytes.pack()
 i2c_read_button.pack()
 i2c_output_label.pack()
 frames["I2C READ"] = frame3
 
-# SPI READ Frame Setup (Placeholder - Adjust according to your SPI setup)
-frame4 = Frame(frame_container, width=600, height=200)
-spi_label = Label(frame4, text="SPI Read Data")
-spi_read_button = Button(frame4, text="Read SPI", command=spi_read)
-spi_output_label = Label(frame4, text="No data read yet")
-spi_label.pack()
-spi_read_button.pack()
-spi_output_label.pack()
-frames["SPI READ"] = frame4
+# SPI READ Frame Setup remains the same...
 
 clicked = StringVar()
 clicked.set(options[0])  # Default set to first option

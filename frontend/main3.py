@@ -1,6 +1,14 @@
 from tkinter import *
 from pyftdi.i2c import I2cController
 
+
+
+board_add=""
+
+def get_board():
+    
+
+
 def i2c_read():
     slave_addr_str = i2c_slave_entry.get()
     register_addr_str = regadd_entry.get()
