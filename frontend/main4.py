@@ -6,11 +6,6 @@ from pyftdi.i2c import I2cController
 # Global variable for UART reading thread control
 stop_threads = False
 
-
-
-
-
-
 def show():
     for frame in frames.values():
         frame.pack_forget()
@@ -99,6 +94,14 @@ def i2c_read():
     finally:
         i2c.terminate()
 
+
+
+
+
+
+
+
+
 # SPI Read Functionality (Placeholder - Implement your SPI logic)
 def spi_read():
     spi_output_label.config(text="SPI Read function not implemented")
@@ -179,6 +182,44 @@ i2c_reg_entry.pack()
 i2c_read_button.pack()
 i2c_output_label.pack()
 frames["I2C READ"] = frame3
+
+
+
+
+
+
+# # I2C WRITE Frame Setup
+# frame5 = Frame(frame_container, width=600, height=200)
+# board_label=Label(frame5,text="enter the board address")
+# board_add=Entry(frame5)
+# bytes_label=Label(frame5, text="Enter number of bytes to read")
+# i2c_label = Label(frame5, text="I2C Read Parameters")
+# i2c_slave_label = Label(frame5, text="I2C Slave Address (hex):")
+# i2c_reg_label = Label(frame3, text="Register Address (hex):")
+# i2c_slave_entry = Entry(frame3)
+# i2c_reg_entry = Entry(frame3)
+# i2c_read_button = Button(frame3, text="Read I2C", command=i2c_read)
+# i2c_output_label = Label(frame3, text="No data read yet")
+# i2c_bytes=Entry(frame3)
+# i2c_label.pack()
+
+# board_label.pack()
+# board_add.pack()
+
+# bytes_label.pack()
+# i2c_bytes.pack()
+
+# i2c_slave_label.pack()
+# i2c_slave_entry.pack()
+# i2c_reg_label.pack()
+# i2c_reg_entry.pack()
+# i2c_read_button.pack()
+# i2c_output_label.pack()
+# frames["I2C READ"] = frame3
+
+
+
+
 
 # SPI READ Frame Setup (Placeholder - Adjust according to your SPI setup)
 frame4 = Frame(frame_container, width=600, height=200)
