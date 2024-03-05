@@ -44,16 +44,8 @@ This function is responsible for reading data from an I2C device:
 - If any part of this process fails (e.g., due to invalid input or communication errors), an error message is displayed.
 - Finally, it terminates the I2C controller to clean up resources.
 
-These functions collectively provide the core functionality for interacting with UART and I2C interfaces through a GUI, allowing users to perform basic read and write operations on connected devices.
-
-
-
-This script is a utility tool for scanning an I2C bus to detect slave devices using an FTDI-based USB to I2C converter. It uses the `pyftdi` library to communicate with the FTDI device and scan the I2C bus. Here's a detailed explanation of each part of the script:
-
- 
-
 ### Scan Script
-
+This script is a utility tool for scanning an I2C bus to detect slave devices using an FTDI-based USB to I2C converter. It uses the `pyftdi` library to communicate with the FTDI device and scan the I2C bus. Here's a detailed explanation of each part of the script:
 #### I2cBusScanner Class
 
 1. **SMB_READ_RANGE and HIGHEST_I2C_SLAVE_ADDRESS**: These constants define the range of addresses to scan in SMBus mode and the highest possible I2C address, respectively.
