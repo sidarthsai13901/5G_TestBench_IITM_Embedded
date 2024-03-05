@@ -1,4 +1,5 @@
 https://ftdichip.com/wp-content/uploads/2023/11/AN_184_FTDI_Device_Input_Output_Pin_States.pdf
+
 https://ftdichip.com/wp-content/uploads/2020/08/AN_135_MPSSE_Basics.pdf
 
 https://learn.adafruit.com/assets/21702
