@@ -50,7 +50,11 @@ These functions collectively provide the core functionality for interacting with
 
 This script is a utility tool for scanning an I2C bus to detect slave devices using an FTDI-based USB to I2C converter. It uses the `pyftdi` library to communicate with the FTDI device and scan the I2C bus. Here's a detailed explanation of each part of the script:
 
-### I2cBusScanner Class
+ 
+
+### Scan Script
+
+#### I2cBusScanner Class
 
 1. **SMB_READ_RANGE and HIGHEST_I2C_SLAVE_ADDRESS**: These constants define the range of addresses to scan in SMBus mode and the highest possible I2C address, respectively.
 
@@ -62,8 +66,6 @@ This script is a utility tool for scanning an I2C bus to detect slave devices us
      - It attempts to read from the address (or just write an empty list if not in SMBus mode). If a device acknowledges the transaction, the address is considered active.
      - If an `I2cNackError` is caught, it means no device acknowledged at the current address, and the scan moves on to the next.
    - Finally, it terminates the I2C controller to clean up resources.
-
-### Main Script
 
 1. **Argument Parsing**: The script uses `argparse` to handle command-line arguments, allowing the user to specify the FTDI device URL, operation mode, verbosity, etc.
 
