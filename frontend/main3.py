@@ -4,8 +4,6 @@ from pyftdi.i2c import I2cController
 
 
 board_add=""
-
-def get_board():
     
 
 
@@ -20,7 +18,7 @@ def i2c_read():
 
         i2c = I2cController()
         try:
-            i2c.configure('ftdi://ftdi:232h:0:ff/1')
+            i2c.configure('ftdi://ftdi:232h:FT9Q27K3/1')
             slave = i2c.get_port(slave_addr)
             slave.write([register_addr], False)
             data = slave.read(2)

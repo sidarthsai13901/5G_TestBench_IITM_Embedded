@@ -7,7 +7,7 @@ from pyftdi.i2c import I2cController
 
 #j5 is i2c0
 
-slave_addr = 0x48
+slave_addr = 0x6c
 # int(input("Slave address: "),16)
 print(type(slave_addr))
 register_addr = int(input("Register add: "),16)

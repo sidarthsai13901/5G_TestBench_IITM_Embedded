@@ -2,7 +2,7 @@ from tkinter import *
 import serial
 import threading
 from pyftdi.i2c import I2cController
-
+from customFTDI import Ftdi
 # Global variable for UART reading thread control
 stop_threads = False
 
@@ -11,7 +11,15 @@ def show():
         frame.pack_forget()
     frame = frames[clicked.get()]
     frame.pack(fill='both', expand=True)
+#Scan device url Functionality  
+def scan_dev():
+    lis1=Ftdi.show_devices()
+    lis2=[]
+    for i in lis1:
+        lis2.append(i[0])
+    return lis2
 
+    
 # UART Read Functionality
 def uart_read():
     global stop_threads
@@ -69,45 +77,87 @@ def uart_write():
             ser.close()
 
 # I2C Read Functionality
-def i2c_read():
-    i2c_slave_str = i2c_slave_entry.get()
-    i2c_reg_str = i2c_reg_entry.get()
-    bytes_num=i2c_bytes.get()
-    board_add_val=board_add.get()
-    # print(board_add_val)
-    try:
-        slave_addr = int(i2c_slave_str, 16)
-        register_addr = int(i2c_reg_str, 16)
-    except ValueError:
-        i2c_output_label.config(text="Invalid address")
-        return
+            
 
-    i2c = I2cController()
+def i2c_read():
+    slave_addr_str = i2c_slave_entry.get()
+    print(slave_addr_str)
+    register_addr_str = i2c_reg_entry.get()
+    print(register_addr_str)
+    bytes_num=i2c_bytes.get()
+    print(bytes_num)
+    board_add_val = slave_addr_var.get()
+
+    # Convert the hexadecimal string inputs to integers
     try:
-        i2c.configure(board_add_val)  # Modify as needed
-        slave = i2c.get_port(slave_addr)
-        slave.write([register_addr], False)
-        data = slave.read(bytes_num)  # Modify based on expected data length
-        i2c_output_label.config(text=f"Read: {data}")
-    except Exception as e:
-        i2c_output_label.config(text=f"Error: {str(e)}")
+        slave_addr = int(slave_addr_str, 16)
+        register_addr = int(register_addr_str, 16)
+
+        i2c = I2cController()
+        try:
+            i2c.configure(board_add_val)
+            slave = i2c.get_port(slave_addr)
+            slave.write([register_addr], False)
+            data = slave.read(int(bytes_num))
+            str1=""
+            for i in range(int(bytes_num)):
+                # print(str(hex(data[i])))
+                str1+=str(hex(data[i]))
+            str1=str1.replace('0x','')
+            res1="0x"+str1
+            i2c_output_label.config(text=res1)
+            
+
+            # i2c_output_label.config(text=f"Read from register {hex(register_addr)}: {str(hex(data[0]))+str(hex(data[1])[2:])}")
+        except Exception as e:
+            i2c_output_label.config(text=f"Error: {str(e)}")
+        finally:
+            i2c.terminate()
+    except ValueError:
+        i2c_output_label.config(text="Invalid input for slave or register address")
+
+
+
+# def i2c_read():
+#     i2c = I2cController()
+
+#     i2c_slave_str = i2c_slave_entry.get()
+#     i2c_reg_str = i2c_reg_entry.get()
+#     bytes_num=i2c_bytes.get()
+#     board_add_val = slave_addr_var.get()
+#     print(board_add_val)
+#     try:
+        
+#         i2c.configure(board_add_val)
+#         slave = i2c.get_port(i2c_slave_str)
+#         print(slave)
+#         slave.write([i2c_reg_str], False)
+#         data = slave.read(bytes_num)
+#         print(data)
+        # print(f"Read from register {hex(i2c_reg_str)}: {str(hex(data[0]))+str(hex(data[1])[2:])}")
+    
     finally:
         i2c.terminate()
 
-<<<<<<< HEAD
+    # i2c = I2cController()
+    # try:
+    #     i2c.configure(board_add_val)  # Modify as needed
+    #     slave = i2c.get_port(i2c_slave_str)
+    #     slave.write([i2c_slave_str], False)
+    #     data = slave.read(bytes_num)  # Modify based on expected data length
+    #     print(bytes_num)
+    #     i2c_output_label.config(text=f"Read: {data}")
+    # except Exception as e:
+    #     i2c_output_label.config(text=f"Error: {str(e)}")
+    # finally:
+    #     i2c.terminate()
 
-
-
-
-
-
-
-=======
+#I2C Write functionality
 def i2c_write():
     i2c_slave_str = i2c_slave_entry_write.get()
     i2c_reg_str = i2c_reg_entry_write.get()
     data_to_write_str = i2c_data_entry.get()  # Assuming there's an entry for data input
-    board_add_val = board_add_write.get()
+    board_add_val = scan_button2.get()
     try:
         slave_addr = int(i2c_slave_str, 16)
         register_addr = int(i2c_reg_str, 16)
@@ -126,7 +176,6 @@ def i2c_write():
         i2c_write_output_label.config(text=f"Error: {str(e)}")
     finally:
         i2c.terminate()
->>>>>>> 6a0af2bc83453c24dfe744ac95de45a194c17c9f
 
 # SPI Read Functionality (Placeholder - Implement your SPI logic)
 def spi_read():
@@ -182,8 +231,10 @@ frames["UART WRITE"] = frame2
 
 # I2C READ Frame Setup
 frame3 = Frame(frame_container, width=600, height=200)
-board_label=Label(frame3,text="enter the board address")
-board_add=Entry(frame3)
+lis_board_add=scan_dev()
+slave_addr_var = StringVar(root)
+
+scan_button =OptionMenu(frame3,slave_addr_var,*lis_board_add)
 bytes_label=Label(frame3, text="Enter number of bytes to read")
 i2c_label = Label(frame3, text="I2C Read Parameters")
 i2c_slave_label = Label(frame3, text="I2C Slave Address (hex):")
@@ -194,9 +245,8 @@ i2c_read_button = Button(frame3, text="Read I2C", command=i2c_read)
 i2c_output_label = Label(frame3, text="No data read yet")
 i2c_bytes=Entry(frame3)
 i2c_label.pack()
+scan_button.pack()
 
-board_label.pack()
-board_add.pack()
 
 bytes_label.pack()
 i2c_bytes.pack()
@@ -247,9 +297,12 @@ frames["I2C READ"] = frame3
 
 # I2C WRITE Frame Setup
 frame5 = Frame(frame_container, width=600, height=200)
-board_label_write = Label(frame5, text="Board Address:")
-board_add_write = Entry(frame5)
 i2c_label_write = Label(frame5, text="I2C Write Parameters")
+lis_board_add2=scan_dev()
+slave_addr_var2= StringVar(root)
+scan_button2 =OptionMenu(frame5,slave_addr_var2,*lis_board_add2)
+
+
 i2c_slave_label_write = Label(frame5, text="I2C Slave Address (hex):")
 i2c_reg_label_write = Label(frame5, text="Register Address (hex):")
 i2c_data_label = Label(frame5, text="Data to Write (hex):")
@@ -260,8 +313,7 @@ i2c_write_button = Button(frame5, text="Write I2C", command=i2c_write)
 i2c_write_output_label = Label(frame5, text="No data written yet")
 
 i2c_label_write.pack()
-board_label_write.pack()
-board_add_write.pack()
+scan_button2.pack()
 i2c_slave_label_write.pack()
 i2c_slave_entry_write.pack()
 i2c_reg_label_write.pack()

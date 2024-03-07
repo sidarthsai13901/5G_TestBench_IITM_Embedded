@@ -454,7 +454,7 @@ class UsbTools:
             out = sys.stdout
         devstrs = cls.build_dev_strings(scheme, vdict, pdict, devdescs)
         max_url_len = max([len(url) for url, _ in devstrs])
-        print("Available interfaces:", file=out)
+        # print("Available interfaces:", file=out)
         return devstrs
         for desc in devstrs:
             print(('  %%-%ds   %%s' % max_url_len) % desc, file=out)
