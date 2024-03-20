@@ -11,15 +11,10 @@ def show():
         frame.pack_forget()
     frame = frames[clicked.get()]
     frame.pack(fill='both', expand=True)
-
-
-    
 #Scan device url Functionality  
 def scan_dev():
     lis1=Ftdi.show_devices()
     lis2=[]
-    if len(lis2)==0:
-        return ["no device found"]
     for i in lis1:
         lis2.append(i[0])
     return lis2
@@ -121,8 +116,7 @@ def i2c_read():
     except ValueError:
         i2c_output_label.config(text="Invalid input for slave or register address")
 
-    finally:
-        i2c.terminate()
+
 
 # def i2c_read():
 #     i2c = I2cController()
@@ -142,7 +136,8 @@ def i2c_read():
 #         print(data)
         # print(f"Read from register {hex(i2c_reg_str)}: {str(hex(data[0]))+str(hex(data[1])[2:])}")
     
-
+    finally:
+        i2c.terminate()
 
     # i2c = I2cController()
     # try:
@@ -183,44 +178,8 @@ def i2c_write():
         i2c.terminate()
 
 # SPI Read Functionality (Placeholder - Implement your SPI logic)
-    
-
-
-# spi needs:
-        
-        # mode : 0, 1, 2, 3   #the master and slave should be in the same mode to work, so maybe a dropdown
-
 def spi_read():
     spi_output_label.config(text="SPI Read function not implemented")
-
-# # Instantiate a SPI controller
-# # We need want to use A*BUS4 for /CS, so at least 2 /CS lines should be
-# # reserved for SPI, the remaining IO are available as GPIOs.
-# spi = SpiController(cs_count=2)
-
-# # Configure the first interface (IF/1) of the FTDI device as a SPI master
-# spi.configure('ftdi://ftdi:2232h/1')
-
-# # Get a port to a SPI slave w/ /CS on A*BUS4 and SPI mode 2 @ 10MHz
-# slave = spi.get_port(cs=1, freq=10E6, mode=2)
-
-# # Synchronous exchange with the remote SPI slave
-# write_buf = b'\x01\x02\x03'
-# read_buf = slave.exchange(write_buf, duplex=True)
-
-
-
-#SPI Write
-
-
-
-
-
-
-
-
-
-
 
 # Main GUI Setup
 root = Tk()
@@ -265,6 +224,49 @@ com_port_entry_write.pack()
 baud_rate_label_write.pack()
 baud_rate_entry_write.pack()
 uart_write_label.pack()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 uart_write_entry.pack()
 uart_write_button.pack()
 uart_write_output.pack()
@@ -272,10 +274,6 @@ frames["UART WRITE"] = frame2
 
 # I2C READ Frame Setup
 frame3 = Frame(frame_container, width=600, height=200)
-
-
-#get this function to run when the i2c option is selected in the main menu or the program wont work when we want to use a pure uart device without i2c
-
 lis_board_add=scan_dev()
 slave_addr_var = StringVar(root)
 
@@ -303,6 +301,11 @@ i2c_reg_entry.pack()
 i2c_read_button.pack()
 i2c_output_label.pack()
 frames["I2C READ"] = frame3
+
+
+
+
+
 
 # # I2C WRITE Frame Setup
 # frame5 = Frame(frame_container, width=600, height=200)
@@ -369,12 +372,6 @@ frames["I2C WRITE"] = frame5
 # Ensure to place the new frame into the show() function and update accordingly
 
 
-
-
-######## Bitfield size depends on the FTDI device: 4432H series use 8-bit GPIO ports, while 232H and 2232H series use wide 16-bit ports.
-
-
-
 # SPI READ Frame Setup (Placeholder - Adjust according to your SPI setup)
 frame4 = Frame(frame_container, width=600, height=200)
 spi_label = Label(frame4, text="SPI Read Data")
@@ -384,16 +381,6 @@ spi_label.pack()
 spi_read_button.pack()
 spi_output_label.pack()
 frames["SPI READ"] = frame4
-
-
-#SPI WRITE
-
-
-
-
-
-
-
 
 clicked = StringVar()
 clicked.set(options[0])  # Default set to first option

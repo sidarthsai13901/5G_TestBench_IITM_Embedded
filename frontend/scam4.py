@@ -1,4 +1,3 @@
-
 from customFTDI import Ftdi
 lis1=Ftdi.show_devices()
 
